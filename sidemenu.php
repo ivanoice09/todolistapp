@@ -20,7 +20,7 @@
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h4>Menu</h4>
+            <h4>menu</h4>
         </div>
         <div class="sidebar-menu">
             <ul class="nav flex-column">
@@ -55,6 +55,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="completed.php">
+                        <i class="bi bi-check-circle"></i> Completed Tasks
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#">
                         <i class="bi bi-list-task"></i> Lists
                     </a>
@@ -63,18 +68,13 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-            <div class="container-fluid">
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="bi bi-list"></i>
-                </button>
-                <a class="navbar-brand" href="index.php">Task App</a>
-            </div>
-        </nav>
+    <!-- Menu button -->
+    <div class="container-fluid">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="bi bi-list"></i>
+        </button>
     </div>
+
 
     <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
