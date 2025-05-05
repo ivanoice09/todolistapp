@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             
             // Redirect to dashboard or home page
-            header("Location: index.php");
+            header("Location: today.php");
             exit();
         } else {
             // Invalid password

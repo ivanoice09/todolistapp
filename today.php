@@ -11,7 +11,7 @@ $completed_tasks = [];
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
-    
+
     // Incomplete tasks
     $stmt = $conn->prepare("SELECT id, title, description, TIME(due_datetime) as due_time 
                           FROM tasks 
@@ -24,7 +24,7 @@ if (isset($_SESSION['user_id'])) {
         $tasks[] = $row;
     }
     $stmt->close();
-    
+
     // Completed tasks (for the badge)
     $stmt = $conn->prepare("SELECT COUNT(*) as count FROM tasks 
                           WHERE user_id = ? AND DATE(due_datetime) = ? AND completed = 1");
@@ -40,16 +40,23 @@ if (isset($_SESSION['user_id'])) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Today's Tasks</title>
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link href="css/fab.css" rel="stylesheet">
+    <!-- bootstrap icon -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- sweetalert link -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Custom CSS -->
     <link href="css/today.css" rel="stylesheet">
 </head>
 
 <body>
-    <?php require 'sidemenu.php'; ?>
+    <!-- sidemenu -->
+    <?php require 'sidenavbar.php'; ?>
+    <!-- task modal -->
+    <?php require 'task_modal.php'; ?>
 
     <div class="main-content">
         <div class="container py-3">
@@ -78,10 +85,10 @@ if (isset($_SESSION['user_id'])) {
                             <div class="card task-card shadow-sm mb-2">
                                 <div class="card-body py-3">
                                     <div class="d-flex align-items-center">
-                                        <input type="checkbox" 
-                                               class="form-check-input task-checkbox" 
-                                               data-task-id="<?php echo $task['id']; ?>"
-                                               onchange="toggleTaskCompletion(this)">
+                                        <input type="checkbox"
+                                            class="form-check-input task-checkbox"
+                                            data-task-id="<?php echo $task['id']; ?>"
+                                            onchange="toggleTaskCompletion(this)">
                                         <div class="flex-grow-1">
                                             <h5 class="card-title task-title mb-1"><?php echo htmlspecialchars($task['title']); ?></h5>
                                             <?php if (!empty($task['description'])): ?>
@@ -108,52 +115,12 @@ if (isset($_SESSION['user_id'])) {
         </div>
     </div>
 
-    <?php require 'task_modal.html'; ?>
-
+    <!-- Bootstrap's 5 js plugin -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function toggleTaskCompletion(checkbox) {
-            const taskId = checkbox.dataset.taskId;
-            const taskCard = checkbox.closest('.task-card');
-            
-            fetch('toggle_task.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ task_id: taskId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    taskCard.classList.toggle('completed');
-                    taskCard.querySelector('.task-title').classList.toggle('text-decoration-line-through');
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
-                }
-            });
-        }
-        
-        function deleteTask(taskId) {
-            if (confirm('Are you sure you want to delete this task?')) {
-                fetch('delete_task.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ task_id: taskId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    }
-                });
-            }
-        }
-    </script>
-
-    <script src="js/task_modal.js"></script>
+    <!-- Sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- custom js -->
+    <script src="js/today.js"></script>
 </body>
+
 </html>

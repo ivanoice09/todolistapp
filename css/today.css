@@ -41,9 +41,9 @@ body {
     background-color: var(--completed-color);
 }
 
-.no-tasks {
+/* .no-tasks {
     background-color: white;
     border-radius: 10px;
     padding: 2rem;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
+} */

@@ -33,21 +33,11 @@ if (isset($_SESSION['user_id'])) {
     <title>Completed Tasks</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        .completed-task {
-            opacity: 0.8;
-            border-left: 4px solid #38b000;
-        }
-
-        .completed-at {
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-    </style>
+    <link href="css/completed.css" rel="stylesheet">
 </head>
 
 <body>
-    <?php require 'sidemenu.php'; ?>
+    <?php require 'sidenavbar.php'; ?>
 
     <div class="main-content">
         <div class="container py-3">
@@ -91,6 +81,7 @@ if (isset($_SESSION['user_id'])) {
             <?php endif; ?>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

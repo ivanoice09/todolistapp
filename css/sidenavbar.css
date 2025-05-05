@@ -1,0 +1,18 @@
+/* 
+    SIDE NAVIGATION MENU CUSTOMIZATION
+*/
+
+/* Narrow on mobile */
+.offcanvas-start {
+    --bs-offcanvas-width: 250px; 
+}
+
+/* increase distance of title from the icon */
+.nav-link i {
+    margin-right: 10px;
+}
+
+.dropdown i {
+    margin-right: 10px;
+}
+

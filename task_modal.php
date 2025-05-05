@@ -1,4 +1,5 @@
 <!-- Task Creation Modal -->
+<link href="css/fab.css" rel="stylesheet">
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -35,3 +36,4 @@
         </div>
     </div>
 </div>
+<script src="js/task_modal.js"></script>

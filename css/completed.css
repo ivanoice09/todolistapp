@@ -1,0 +1,9 @@
+.completed-task {
+    opacity: 0.8;
+    border-left: 4px solid #38b000;
+}
+
+.completed-at {
+    font-size: 0.8rem;
+    color: #6c757d;
+}

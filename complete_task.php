@@ -3,6 +3,11 @@ header('Content-Type: application/json');
 session_start();
 require_once 'db.php';
 
+// Check connection
+if ($conn->connect_error) {
+    die(json_encode(['success' => false, 'message' => 'Database connection failed']));
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $task_id = $data['task_id'] ?? null;
