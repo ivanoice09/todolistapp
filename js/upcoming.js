@@ -1,6 +1,6 @@
 function markTaskComplete(taskId) {
     if (confirm('Mark this task as complete?')) {
-        fetch('toggle_task.php', {
+        fetch('complete_task.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

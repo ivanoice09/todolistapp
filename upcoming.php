@@ -7,14 +7,18 @@ $tasks_by_date = [];
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
+    $today = date("Y-m-d");
 
     $stmt = $conn->prepare("SELECT id, title, description, 
                           DATE(due_datetime) as due_date, 
                           TIME(due_datetime) as due_time 
                           FROM tasks 
-                          WHERE user_id = ? AND completed = 0
+                          WHERE user_id = ? 
+                          AND completed = 0
+                          AND due_datetime IS NOT NULL
+                          AND DATE(due_datetime) > ?
                           ORDER BY due_datetime ASC");
-    $stmt->bind_param("i", $user_id);
+    $stmt->bind_param("is", $user_id, $today);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -34,51 +38,13 @@ if (isset($_SESSION['user_id'])) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Upcoming Tasks</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- sweetalert link -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        .date-header {
-            background-color: #f8f9fa;
-            padding: 8px 15px;
-            margin: 20px 0 10px 0;
-            border-left: 4px solid #4361ee;
-            font-weight: 500;
-        }
-
-        .today-header {
-            background-color: #e3f2fd;
-            border-left-color: #2196f3;
-        }
-
-        .task-card {
-            transition: all 0.2s;
-            margin-bottom: 10px;
-        }
-
-        .task-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .task-time {
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-
-        .no-tasks {
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white;
-            border-radius: 10px;
-            padding: 2rem;
-        }
-    </style>
+    <link href="css/upcoming.css" rel="stylesheet">
 </head>
 
 <body>
@@ -96,36 +62,25 @@ if (isset($_SESSION['user_id'])) {
 
             <?php if (empty($tasks_by_date)): ?>
                 <div class="no-tasks text-center">
-                    <div>
-                        <i class="bi bi-calendar-check text-muted" style="font-size: 3rem;"></i>
-                        <h4 class="mt-3">No upcoming tasks</h4>
-                        <p class="text-muted">Add tasks with future due dates to see them here</p>
-                    </div>
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                    <h4 class="mt-3">No upcoming tasks</h4>
+                    <p class="text-muted">Add tasks with future due dates to see them here</p>
+                    <a href="task_modal.php" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#taskModal">
+                        <i class="bi bi-plus"></i> Add Task with Due Date
+                    </a>
                 </div>
             <?php else: ?>
                 <div class="upcoming-tasks">
                     <?php foreach ($tasks_by_date as $date => $tasks): ?>
-                        <?php
-                        $date_obj = new DateTime($date);
-                        $is_today = $date === date('Y-m-d');
-                        $is_tomorrow = $date === date('Y-m-d', strtotime('+1 day'));
-                        ?>
-
-                        <div class="date-header <?php echo $is_today ? 'today-header' : ''; ?>">
-                            <?php if ($is_today): ?>
-                                <i class="bi bi-star-fill text-warning me-2"></i> Today
-                            <?php elseif ($is_tomorrow): ?>
-                                <i class="bi bi-sun text-info me-2"></i> Tomorrow
-                            <?php else: ?>
-                                <i class="bi bi-calendar-date me-2"></i>
-                                <?php echo $date_obj->format('l, F j'); ?>
-                                <small class="text-muted ms-2"><?php echo $date_obj->format('Y'); ?></small>
-                            <?php endif; ?>
+                        <div class="date-header">
+                            <i class="bi bi-calendar2-range"></i>
+                            <?php echo date('l, F j', strtotime($date)); ?>
+                            <small class="text-muted ms-2"><?php echo date('Y', strtotime($date)); ?></small>
                         </div>
 
                         <div class="task-list">
                             <?php foreach ($tasks as $task): ?>
-                                <div class="card task-card shadow-sm">
+                                <div class="card task-card shadow-sm mb-3">
                                     <div class="card-body py-3">
                                         <div class="d-flex align-items-center">
                                             <div class="flex-grow-1">

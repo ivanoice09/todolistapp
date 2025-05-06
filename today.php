@@ -79,7 +79,7 @@ if (isset($_SESSION['user_id'])) {
                     <p class="text-muted">Add a task using the + button below</p>
                 </div>
             <?php else: ?>
-                <div class="row g-3">
+                <div class="row">
                     <?php foreach ($tasks as $task): ?>
                         <div class="col-12">
                             <div class="card task-card shadow-sm mb-2">
@@ -101,7 +101,7 @@ if (isset($_SESSION['user_id'])) {
                                                     <i class="bi bi-clock"></i> <?php echo date('g:i A', strtotime($task['due_time'])); ?>
                                                 </span>
                                             <?php endif; ?>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteTask(<?php echo $task['id']; ?>)">
+                                            <button class="btn btn-sm btn-outline-danger" id="deleteTask" onclick="deleteTask(<?php echo $task['id']; ?>)">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
@@ -120,7 +120,8 @@ if (isset($_SESSION['user_id'])) {
     <!-- Sweetalert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- custom js -->
-    <script src="js/today.js"></script>
+    <script src="js/toggle_complete_task.js"></script>
+    <script src="js/delete_task.js"></script>
 </body>
 
 </html>

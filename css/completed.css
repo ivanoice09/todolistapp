@@ -7,3 +7,29 @@
     font-size: 0.8rem;
     color: #6c757d;
 }
+
+.view-toggle {
+    margin-bottom: 20px;
+}
+
+.view-toggle .btn {
+    border-radius: 0;
+}
+
+.view-toggle .btn:first-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.view-toggle .btn:last-child {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.date-header {
+    background-color: #f8f9fa;
+    padding: 8px 15px;
+    margin: 20px 0 10px 0;
+    border-left: 4px solid #38b000;
+    font-weight: 500;
+}

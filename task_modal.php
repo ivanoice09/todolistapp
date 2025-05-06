@@ -3,7 +3,7 @@
 <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="task_process.php" method="POST">
+            <form id="taskForm">
                 <div class="modal-header">
                     <h5 class="modal-title" id="taskModalLabel">Create New Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -19,11 +19,11 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="taskDueDate" class="form-label">Due Date</label>
-                            <input type="date" class="form-control" id="taskDueDate" name="due_date" required>
+                            <label for="taskDueDate" class="form-label">Due Date (optional)</label>
+                            <input type="date" class="form-control" id="taskDueDate" name="due_date">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="taskDueTime" class="form-label">Due Time</label>
+                            <label for="taskDueTime" class="form-label">Due Time (optional)</label>
                             <input type="time" class="form-control" id="taskDueTime" name="due_time">
                         </div>
                     </div>

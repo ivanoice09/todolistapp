@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Check if we're on one of the allowed pages for FAB
-    const allowedPages = ['today.php', 'upcoming.php', 'calendar.php'];
+    const allowedPages = ['inbox.php', 'today.php', 'upcoming.php', 'calendar.php'];
     const currentPage = window.location.pathname.split('/').pop();
 
     if (allowedPages.includes(currentPage)) {
@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const formattedDate = today.toISOString().split('T')[0];
             document.getElementById('taskDueDate').value = formattedDate;
             document.getElementById('taskDueDate').readOnly = true;
+        
         } else {
             document.getElementById('taskDueDate').readOnly = false;
         }
@@ -57,26 +58,56 @@ document.addEventListener('DOMContentLoaded', function () {
         taskForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
+            // Disable submit button to prevent multiple submissions
+            const submitBtn = taskForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+
             const formData = new FormData(taskForm);
 
             fetch('task_process.php', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.json())
+                .then(response => {
+                    // First check if the response is JSON
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();
+                    }
+                })
                 .then(data => {
-                    if (data.success) {
-                        // Close modal and refresh page
+                    if (data && data.success) {
+                        // Close modal and redirect
                         const modal = bootstrap.Modal.getInstance(document.getElementById('taskModal'));
                         modal.hide();
-                        window.location.reload();
-                    } else {
-                        alert('Error: ' + data.message);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Task Saved',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            // Redirect to appropriate page based on section
+                            if (formData.get('due_date')) {
+                                window.location.href = 'today.php';
+                            } else {
+                                window.location.href = 'inbox.php';
+                            }
+                        });
+
+                    } else if (data) {
+                        Swal.fire('Error', data.message || 'Failed to create task', 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred while saving the task.');
+                    Swal.fire('Error', 'An error occurred while saving the task.', 'error');
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Save Task';
                 });
         });
     }

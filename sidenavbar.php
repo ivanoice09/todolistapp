@@ -3,7 +3,9 @@
 <link href="css/sidenavbar.css" rel="stylesheet">
 <div>
     <!-- button to open offcanvas (menu sidebar) -->
-    <button class="btn btn-secondary m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">menu</button>
+    <button class="btn btn-secondary m-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+        <i class="bi bi-list"></i>
+    </button>
 
     <!-- offcanvas sidemenu -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
@@ -40,6 +42,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="inbox.php">
+                    <i class="bi bi-inbox"></i>
+                    <span class="menu-text">Inbox</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="today.php">
                     <i class="bi bi-calendar"></i> Today
                 </a>
@@ -68,4 +76,4 @@
     </div>
 </div>
 <!-- Invoke function from sweetalerts.js -->
-<script src="js/sweetalerts.js"></script> 
+<script src="js/logout_sweetalert.js"></script>

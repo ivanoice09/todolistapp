@@ -17,5 +17,3 @@ document.getElementById('logoutLink').addEventListener('click', function (e) {
         }
     });
 });
-
-// delete task

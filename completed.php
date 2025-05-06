@@ -2,18 +2,30 @@
 session_start();
 require_once 'db.php';
 
+// Check which view to show (today or all)
+$view = $_GET['view'] ?? 'today'; // Default to today's tasks
+$today = date('Y-m-d');
+
 // Get today's completed tasks
 $completed_tasks = [];
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
-    $today = date('Y-m-d');
 
-    $stmt = $conn->prepare("SELECT id, title, description, TIME(due_datetime) as due_time, 
+    if ($view === 'today') {
+        $stmt = $conn->prepare("SELECT id, title, description, TIME(due_datetime) as due_time, 
                           completed_at FROM tasks 
                           WHERE user_id = ? AND DATE(due_datetime) = ? AND completed = 1
                           ORDER BY completed_at DESC");
-    $stmt->bind_param("is", $user_id, $today);
+        $stmt->bind_param("is", $user_id, $today);
+    } else {
+        $stmt = $conn->prepare("SELECT id, title, description, TIME(due_datetime) as due_time, 
+                              DATE(due_datetime) as due_date, completed_at FROM tasks 
+                              WHERE user_id = ? AND completed = 1
+                              ORDER BY due_datetime DESC");
+        $stmt->bind_param("i", $user_id);
+    }
+
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -42,42 +54,55 @@ if (isset($_SESSION['user_id'])) {
     <div class="main-content">
         <div class="container py-3">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h1 class="h3 mb-0">Completed Tasks</h1>
-                    <span class="text-muted"><?php echo date('F j, Y'); ?></span>
-                </div>
+                <h1 class="h3 mb-0">Completed Tasks</h1>
                 <a href="today.php" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Back to Today
                 </a>
             </div>
 
+            <!-- View Toggle -->
+            <div class="view-toggle btn-group w-100 mb-4">
+                <a href="?view=today" class="btn <?= $view === 'today' ? 'btn-success' : 'btn-outline-success' ?>">
+                    Today's task
+                </a>
+                <a href="?view=all" class="btn <?= $view === 'all' ? 'btn-success' : 'btn-outline-success' ?>">
+                    All tasks
+                </a>
+            </div>
+
             <?php if (empty($completed_tasks)): ?>
                 <div class="alert alert-info">
-                    No completed tasks for today.
+                    No completed tasks found.
                 </div>
             <?php else: ?>
-                <div class="row g-3">
-                    <?php foreach ($completed_tasks as $task): ?>
-                        <div class="col-12">
-                            <div class="card completed-task shadow-sm mb-2">
-                                <div class="card-body py-3">
-                                    <div class="d-flex align-items-center">
-                                        <i class="bi bi-check-circle-fill text-success me-3" style="font-size: 1.5rem;"></i>
-                                        <div class="flex-grow-1">
-                                            <h5 class="card-title mb-1 text-decoration-line-through"><?php echo htmlspecialchars($task['title']); ?></h5>
-                                            <?php if (!empty($task['description'])): ?>
-                                                <p class="card-text text-muted small mb-0"><?php echo nl2br(htmlspecialchars($task['description'])); ?></p>
-                                            <?php endif; ?>
-                                            <small class="completed-at">
-                                                Completed at <?php echo date('g:i A', strtotime($task['completed_at'])); ?>
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <?php if ($view === 'all'): ?>
+                    <!-- Group by date for "All" view -->
+                    <?php
+                    $grouped_tasks = [];
+                    foreach ($completed_tasks as $task) {
+                        $date = date('Y-m-d', strtotime($task['due_date']));
+                        $grouped_tasks[$date][] = $task;
+                    }
+                    ?>
+
+                    <?php foreach ($grouped_tasks as $date => $tasks): ?>
+                        <div class="date-header">
+                            <i class="bi bi-calendar-date me-2"></i>
+                            <?= date('l, F j, Y', strtotime($date)) ?>
                         </div>
+
+                        <?php foreach ($tasks as $task): ?>
+                            <!-- Task card (same as below) -->
+                            <?php include 'completed_task_card.php'; ?>
+                        <?php endforeach; ?>
                     <?php endforeach; ?>
-                </div>
+
+                <?php else: ?>
+                    <!-- Simple list for "Today" view -->
+                    <?php foreach ($completed_tasks as $task): ?>
+                        <?php include 'completed_task_card.php'; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
     </div>
