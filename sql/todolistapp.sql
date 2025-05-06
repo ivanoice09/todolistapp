@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mag 03, 2025 alle 02:54
--- Versione del server: 8.1.0
+-- Creato il: Mag 06, 2025 alle 16:49
+-- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -28,26 +28,38 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `tasks` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
-  `completed` tinyint(1) DEFAULT '0',
-  `user_id` int DEFAULT NULL,
-  `due_datetime` datetime NOT NULL,
-  `list_id` int DEFAULT NULL,
-  `completed_at` timestamp NULL DEFAULT NULL
+  `completed` tinyint(1) DEFAULT 0,
+  `user_id` int(11) DEFAULT NULL,
+  `due_datetime` datetime DEFAULT NULL,
+  `list_id` int(11) DEFAULT NULL,
+  `completed_at` timestamp NULL DEFAULT current_timestamp(),
+  `section` enum('inbox','today','upcoming') DEFAULT 'inbox',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dump dei dati per la tabella `tasks`
 --
 
-INSERT INTO `tasks` (`id`, `title`, `description`, `completed`, `user_id`, `due_datetime`, `list_id`, `completed_at`) VALUES
-(5, 'Saasnnv', '', 1, 1, '2025-05-03 23:10:00', NULL, NULL),
-(6, 'ascacxcasc', 'ascasc', 1, 1, '2025-05-03 23:13:00', NULL, NULL),
-(7, 'ascac', 'ascasc', 1, 1, '2025-05-03 00:19:00', NULL, NULL),
-(8, 'Jogging', 'Run fast as fuck', 0, 1, '2025-05-04 07:00:00', NULL, NULL),
-(9, 'asdacxcas', 'cascasc', 1, 1, '2025-05-03 02:55:00', NULL, NULL);
+INSERT INTO `tasks` (`id`, `title`, `description`, `completed`, `user_id`, `due_datetime`, `list_id`, `completed_at`, `section`, `created_at`) VALUES
+(8, 'Jogging', 'Run fast as fuck', 1, 1, '2025-05-04 07:00:00', NULL, NULL, 'inbox', '2025-05-06 10:49:42'),
+(22, 'ascascasc', '', 1, 1, '2025-05-06 00:00:00', NULL, '2025-05-06 10:31:11', 'inbox', '2025-05-06 10:49:42'),
+(23, 'qwdqdascawvasva', '', 1, 1, '2025-05-06 00:00:00', NULL, '2025-05-06 10:32:31', 'inbox', '2025-05-06 10:49:42'),
+(24, 'ascasczxccasc', '', 1, 1, '2025-05-06 00:00:00', NULL, '2025-05-06 10:33:18', 'inbox', '2025-05-06 10:49:42'),
+(25, 'asasdasd', '', 1, 1, '2025-05-06 00:00:00', NULL, '2025-05-06 11:05:16', 'today', '2025-05-06 11:05:16'),
+(28, 'Continuare a studiare AJAX', '', 0, 1, '2025-05-08 00:00:00', NULL, '2025-05-06 11:35:36', 'upcoming', '2025-05-06 11:35:36'),
+(30, 'asdasd', '', 0, 1, NULL, NULL, '2025-05-06 12:45:07', 'inbox', '2025-05-06 12:45:07'),
+(31, 'asdasdasd', '', 0, 1, NULL, NULL, '2025-05-06 12:48:54', 'inbox', '2025-05-06 12:48:54'),
+(32, 'sdfsdfsdf', '', 0, 1, '2025-05-06 00:00:00', NULL, '2025-05-06 12:49:02', 'today', '2025-05-06 12:49:02'),
+(33, 'Portare fuori il cane', '', 0, 1, '2025-05-17 00:00:00', NULL, '2025-05-06 13:06:10', 'upcoming', '2025-05-06 13:06:10'),
+(34, 'ascascasc', '', 0, 1, NULL, NULL, '2025-05-06 13:09:15', 'inbox', '2025-05-06 13:09:15'),
+(35, 'aevav', '', 0, 1, '2025-05-14 00:00:00', NULL, '2025-05-06 13:09:42', 'today', '2025-05-06 13:09:42'),
+(36, 'aksnvonownv', '', 0, 1, NULL, NULL, '2025-05-06 13:12:10', 'inbox', '2025-05-06 13:12:10'),
+(37, 'wcqacawc', '', 0, 1, '2025-05-17 00:00:00', NULL, '2025-05-06 14:08:04', 'upcoming', '2025-05-06 14:08:04'),
+(38, 'mjdkjdjvmjfckl', '', 0, 1, '2025-05-17 00:00:00', NULL, '2025-05-06 14:08:35', 'upcoming', '2025-05-06 14:08:35');
 
 -- --------------------------------------------------------
 
@@ -56,9 +68,9 @@ INSERT INTO `tasks` (`id`, `title`, `description`, `completed`, `user_id`, `due_
 --
 
 CREATE TABLE `users` (
-  `id` int NOT NULL,
-  `first_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `last_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` int(11) NOT NULL,
+  `first_name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
   `dob` date NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
@@ -79,7 +91,8 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `dob`, `email`, `password`
 -- Indici per le tabelle `tasks`
 --
 ALTER TABLE `tasks`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`,`due_datetime`);
 
 --
 -- Indici per le tabelle `users`
@@ -95,13 +108,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT per la tabella `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
