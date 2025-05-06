@@ -2,7 +2,7 @@ function toggleTaskCompletion(checkbox) {
     const taskId = checkbox.dataset.taskId;
     const taskCard = checkbox.closest('.task-card');
 
-    fetch('toggle_task.php', {
+    fetch('complete_task.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
